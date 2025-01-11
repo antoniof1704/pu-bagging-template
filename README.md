@@ -19,7 +19,7 @@ Process flow for PU bagging from another paper (Wang et al., 2024) (Paper Title:
 ![image](https://github.com/user-attachments/assets/c64dfc26-cfff-49af-9feb-b2a7c16d2fad)
 
 
-High Level Summary of Bootstrap Process Within the Code:
+## High Level Summary of Bootstrap Process Within the Code:
 
 This process generates 100 bootstrap samples from the training data, allowing for resampling. These bootstrap samples are then balanced, where the majority class (unlabelled) is subsampled to match the minority class (positive) within each bootstrap. Once the bootstrap is balanced, the process identifies all cases that are not included in each initial bootstrap sample before balancing (Out-Of-Bag, or OOB). A random forest classifier is then fitted to the rebalanced sample (X and Y). The model is applied to the OOB cases, and the predictions for positive cases are recorded and stored. Additionally, the model is applied to the test data, and those predictions are stored as well. This concludes the iterative phase.
 
