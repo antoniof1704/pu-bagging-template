@@ -27,3 +27,11 @@ Next, the average of all stored bootstrap OOB predictions is calculated. This he
 
 The predictions stored from the test data are aggregated using majority voting to make final predictions on unseen data (test set). The idea is that combining multiple models through voting is more reliable than any individual model, reducing bias and variance, and ultimately making the model more robust.
 
+
+## Hidden Positive Method to Evaluate Model
+
+A novel approach I have come up with to evaluate a positive-unlabelled learning model is to hide a small number of positive instances within the unlabelled data in the training set. After training the model, you can rerun it on the same training data to generate predictions. By examining the model’s predictions for the hidden positives, you can assess how effectively the model is identifying positive cases within the unlabelled data.
+
+This evaluation is performed on the training set (X_train) rather than the test set (X_test) because the model has already seen whether each case is positive or unlabelled during training (y_train). This method provides a potential measure of the model's ability to recognise positives within the unlabelled data it was exposed to during training.
+
+This template also produces the standard evaluation metrics (accuracy, precision, recall, F1) generated from the test datasets (orthodox method to model evaluation).
