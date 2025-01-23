@@ -156,6 +156,10 @@ oob_scores = np.zeros((len(X_train), n_iterations))  # Store OOB scores for each
 # List to hold predictions from each bootstrap sample (for evaluation)
 bootstrap_predictions = []
 
+# Store model weights so they can be applied to new data
+list_of_model_weights = []
+
+
 for i in range(n_iterations):
 
     # Sample with replacement from the training data
@@ -192,6 +196,10 @@ for i in range(n_iterations):
     # Make predictions on the test set
     predictions = model.predict(X_test)
     bootstrap_predictions.append(predictions)
+
+    # Append model wieght from each bootstrap to the list of weights
+    list_of_model_weights.append(model)
+
 
 # Aggregate OOB scores (average across all bootstrap samples) - ONLY FOR QA PURPOSES
 average_oob_scores = np.mean(oob_scores, axis=1)
@@ -240,6 +248,21 @@ print(f"Recall: {recall:.2f}")
 
 f1 = f1_score(y_test, final_predictions)
 print(f"F1 Score: {f1:.2f}")
+
+
+## HOW MODEL WEIGHTS WOULD BE APPLIED TO NEW DATA ##
+
+#predictions = []
+
+#for model in list_of_model_weights:
+
+    #prediction = model.predict(new data)
+    #predictions.append(prediction)
+
+# EG. User 1 (model weights  x 100 - 100 bootstrap models)
+#     User 2 (model weights  x 100 - 100 bootstrap models)
+#                              '''
+
 
 ### END ###
 
