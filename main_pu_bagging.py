@@ -55,22 +55,32 @@ import seaborn as sns
 from scipy.stats import pointbiserialr, shapiro
 from scipy import stats
 
+from utils.generate_eval_metrics import generate_eval_metrics
+
 import numpy as np
 
+from ucimlrepo import fetch_ucirepo 
+# fetch dataset 
+breast_cancer_wisconsin_diagnostic = fetch_ucirepo(id=17) 
+print(breast_cancer_wisconsin_diagnostic) 
+y = breast_cancer_wisconsin_diagnostic.data.targets 
+print(y)
 
 ## Import input dataset (target variable must be 1 (positive instance) or 0 (unlabelled instance)) ##
 
-df = pd.read_csv(FILE_NAME) # CHANGE 'FILE_NAME' TO CSV YOU WANT TO IMPORT
+print("Importing Wisconsin Breast Cancer Diagnostic Data....")
+
+df = breast_cancer_wisconsin_diagnostic
 df
 
 print("Original Dataset Counts")
-print(df['TARGET_VARIABLE'].value_counts()) # CHANGE 'TARGET_VARIABLE' TO NAME OF TARGET VARIABLE 
+print(df['Diagnosis'].value_counts()) 
 
 
 # Split input dataset into features and target.
 
-y = df["TARGET_VARIABLE"] # CHANGE 'TARGET_VARIABLE' TO NAME OF TARGET VARIABLE 
-X = df.drop("TARGET_VARIABLE", axis=1) # CHANGE 'TARGET_VARIABLE' TO NAME OF TARGET VARIABLE 
+y = df["Diagnosis"] 
+X = df.drop("Diagnosis", axis=1) 
 
 
 # Split input dataset into train (80%) and test (20%) for modelling
@@ -84,44 +94,12 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Use a standard (balanced class) random forest classifier (without PU Bagging method) to compare results with PU Bagging Method Below.
 
-# Create basic random forest classifier (balanced class)
 rf = RandomForestClassifier(class_weight="balanced", max_leaf_nodes=8, random_state=1)
 rf = rf.fit(X_train, y_train) #using hidden pos y train
 y_pred = rf.predict(X_test)
  
+generate_eval_metrics(y_test, y_pred)
 
-## Generate Eval metrics for Random Forest 
-
-# Confusion Matrix
-
-actual = y_test
-predicted = y_pred
-
-cm_result  = confusion_matrix(actual, predicted)
-
-custom_labels = ['TARGET_VARIABLE_0', 'TARGET_VARIABLE_1'] # CHANGE TARGET_VARIABLE_0 = Unlabelled Instance (0), TARGET_VARIABLE_1 = Positive Instance (1)
-cm_display = ConfusionMatrixDisplay(confusion_matrix = cm_result, display_labels = custom_labels)
-
-cm_display.plot()
-
-print("Confusion Matrix:")
-plt.show()
-
-# Accuracy
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy: {accuracy * 100:.2f}%")
-
-# Precision
-precision = precision_score(y_test, y_pred)
-print(f"Precision: {precision:.2f}")
-
-# Recall
-recall = recall_score(y_test, y_pred)
-print(f"Recall: {recall:.2f}")
-
-# F1 Score
-f1 = f1_score(y_test, y_pred)
-print(f"F1 Score: {f1:.2f}")
 
 
 
